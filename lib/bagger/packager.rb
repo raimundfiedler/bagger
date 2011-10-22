@@ -59,8 +59,19 @@ module Bagger
     end
 
     def write_manifest
-      File.open(@manifest_path, 'w') do |f|
-        f.write JSON.pretty_generate(@manifest)
+      if @manifest_path =~ /.*\.json$/
+        File.open(@manifest_path, 'w') do |f|
+          f.write JSON.pretty_generate(@manifest)
+        end
+      end
+      if @manifest_path =~ /.*\.xml$/
+        File.open(@manifest_path, 'w') do |f|
+          f.write "<manifest>"
+          @manifest.each do |key, value|
+            f.write "<entry key=\"#{key}\" versioned=\"#{value}\"/>"
+          end
+          f.write "</manifest>"
+        end
       end
     end
 
