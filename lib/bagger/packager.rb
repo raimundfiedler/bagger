@@ -38,7 +38,8 @@ module Bagger
       File.open(new_file_path, 'w') { |f| f.write content }
       FileUtils.rm(File.join(@target_dir, path)) unless keep_original
       manifest_key_path = File.expand_path("/#{dirname}/#{basename}#{extension}")
-      add_to_manifest(manifest_key_path, File.join(dirname, new_file_name))
+     # add_to_manifest(manifest_key_path, File.join(dirname, new_file_name))
+      add_to_manifest(manifest_key_path, md5) 
    end
 
     def stylesheets
@@ -59,11 +60,6 @@ module Bagger
     end
 
     def write_manifest
-      if @manifest_path =~ /.*\.json$/
-        File.open(@manifest_path, 'w') do |f|
-          f.write JSON.pretty_generate(@manifest)
-        end
-      end
       if @manifest_path =~ /.*\.xml$/
         File.open(@manifest_path, 'w') do |f|
           f.write "<manifest>"
@@ -71,6 +67,10 @@ module Bagger
             f.write "<entry key=\"#{key}\" versioned=\"#{value}\"/>"
           end
           f.write "</manifest>"
+        end
+      else
+        File.open(@manifest_path, 'w') do |f|
+          f.write JSON.pretty_generate(@manifest)
         end
       end
     end
