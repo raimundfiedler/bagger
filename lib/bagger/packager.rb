@@ -23,7 +23,7 @@ module Bagger
     end
 
     def add_to_manifest(key, path)
-      @manifest[key] = File.expand_path(@path_prefix + "/" + path)
+      @manifest[key] = path #File.expand_path(@path_prefix + "/" + path)
     end
 
     def to_manifest(path, keep_original = true)
