@@ -19,11 +19,12 @@ module Bagger
       @path_prefix = @options[:path_prefix] || ''
       @exclude_files = Array(@options[:exclude_files])
       @exclude_pattern = @options[:exclude_pattern]
+      @version_as_value = @options[:version_as_value] || false
       @manifest = {}
     end
 
     def add_to_manifest(key, path)
-      @manifest[key] = path #File.expand_path(@path_prefix + "/" + path)
+      @manifest[key] = File.expand_path(@path_prefix + "/" + path)
     end
 
     def to_manifest(path, keep_original = true)
@@ -38,8 +39,11 @@ module Bagger
       File.open(new_file_path, 'w') { |f| f.write content }
       FileUtils.rm(File.join(@target_dir, path)) unless keep_original
       manifest_key_path = File.expand_path("/#{dirname}/#{basename}#{extension}")
-     # add_to_manifest(manifest_key_path, File.join(dirname, new_file_name))
-      add_to_manifest(manifest_key_path, md5) 
+      if @version_as_value
+        @manifest[manifest_key_path] = md5
+      else 
+        add_to_manifest(manifest_key_path, File.join(dirname, new_file_name))
+      end
    end
 
     def stylesheets
